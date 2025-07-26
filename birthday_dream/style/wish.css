@@ -6,6 +6,16 @@ body {
   margin: 0;
 }
 
+.photo {
+  display: block;
+  margin: 20px auto;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid #a8e6cf;
+}
+
 .cake-container {
   max-width: 400px;
   margin: auto;

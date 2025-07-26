@@ -10,7 +10,7 @@ function blowCandle() {
 
     // รอเสียงเล่นจบหรือรอเวลาสัก 2 วิ แล้วเปลี่ยนหน้า
     setTimeout(() => {
-      window.location.href = 'birthday.html'; // เปลี่ยนเป็นหน้าที่ต้องการไปต่อ
+      window.location.href = indexedDB.html; // เปลี่ยนเป็นหน้าที่ต้องการไปต่อ
     }, 2000); // 2 วินาที
   }
 }
@@ -25,5 +25,5 @@ document.addEventListener('click', function (e) {
 
   setTimeout(() => {
     heart.remove();
-  }, 1000);
+  }, 1500);
 });
