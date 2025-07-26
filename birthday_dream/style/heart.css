@@ -1,0 +1,43 @@
+.heart {
+  width: 20px;
+  height: 20px;
+  position: fixed;
+  background-color: #ff99c8;
+  transform: rotate(45deg);
+  animation: floatUp 1s ease-out forwards;
+  z-index: 1000;
+}
+
+.heart::before,
+.heart::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: #ff99c8;
+  border-radius: 50%;
+}
+
+.heart::before {
+  top: -10px;
+  left: 0;
+}
+
+.heart::after {
+  left: -10px;
+  top: 0;
+}
+
+.heart-effect {
+  position: fixed;
+  font-size: 2rem;
+  animation: floatUp 2s ease-out forwards;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1000;
+}
+
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
+}
