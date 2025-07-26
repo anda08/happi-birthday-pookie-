@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>Welcome ดรีม 💖</title>
+  <link rel="stylesheet" href="style/heart.css" />
+  <style>
+    body {
+      background: #ffd1dc;
+      font-family: 'Kanit', sans-serif;
+      color: #a83279;
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .container {
+      background: #fff0f6;
+      border-radius: 25px;
+      padding: 30px 40px;
+      max-width: 400px;
+      box-shadow: 0 10px 25px rgba(168, 101, 131, 0.3);
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #d85c9f;
+    }
+    button {
+      background: #ffb6c1;
+      border: none;
+      border-radius: 15px;
+      padding: 12px 24px;
+      margin: 10px 10px 20px 10px;
+      color: #6a1b4d;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #ff89a1;
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      border-radius: 12px;
+      border: 2px solid #ffa6c0;
+      margin: 10px 0 20px 0;
+      font-size: 16px;
+      outline: none;
+      color: #a83279;
+    }
+    .error {
+      color: #d0003a;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    img.gif {
+      width: 180px;
+      margin: 15px auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="question-title">ดรีมรักพี่ไหม? 🥺</h1>
+    <div id="input-area"></div>
+    <div id="error-msg" class="error"></div>
+  </div>
+
+  <audio id="clickSound" src="audio/mouse-click.mp3" preload="auto"></audio>
+
+  <script>
+    const questions = [
+      {
+        type: "button",
+        id: "love",
+        question: "ดรีมรักพี่ไหม? 🥺",
+        options: ["รักกกก", "ไม่อ่ะ🙄"],
+        correct: "รักกกก",
+        successGif: "https://media.giphy.com/media/111ebonMs90YLu/giphy.gif",
+      },
+      {
+        type: "text",
+        id: "birthday-date",
+        question: "ดรีมเกิดวันที่เท่าไหร่? 🎂 (รูปแบบ: วัน/เดือน เช่น 32/10)",
+        correct: "30/07",
+      },
+      {
+        type: "text",
+        id: "birthday-day",
+        question: "วันเกิดดรีมตรงกับวันอะไรเอ่ย? 📅 (เช่น วันจันทร์)",
+        correct: "วันพฤหัสบดี",
+      },
+      {
+        type: "text",
+        id: "birthday-age",
+        question: "ตอนนี้ดรีมอายุเท่าไหร่? 👶",
+        correct: "16",
+      },
+      {
+        type: "button",
+        id: "hug",
+        question: "อยากกอดพี่ไหมมม 🧸",
+        options: ["อยากสุดๆ", "ไม่อยาก เหม็น"],
+        correct: "อยากสุดๆ",
+        successGif: "https://media.giphy.com/media/111ebonMs90YLu/giphy.gif",
+      }
+    ];
+
+    let currentIndex = 0;
+    let retryCount = {};
+    const container = document.querySelector('.container');
+    const questionTitle = document.getElementById('question-title');
+    const inputArea = document.getElementById('input-area');
+    const errorMsg = document.getElementById('error-msg');
+    const clickSound = document.getElementById('clickSound');
+
+    function showQuestion() {
+      errorMsg.textContent = "";
+      inputArea.innerHTML = "";
+      const q = questions[currentIndex];
+      questionTitle.textContent = q.question;
+
+      if (q.type === "button") {
+        q.options.forEach(option => {
+          const btn = document.createElement("button");
+          btn.textContent = option;
+          btn.onclick = () => {
+            clickSound.play();
+            checkAnswer(option);
+          };
+          inputArea.appendChild(btn);
+        });
+      } else if (q.type === "text") {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "พิมพ์คำตอบที่นี่";
+        inputArea.appendChild(input);
+
+        const btnSubmit = document.createElement("button");
+        btnSubmit.textContent = "ส่งคำตอบ";
+        btnSubmit.onclick = () => {
+          clickSound.play();
+          checkAnswer(input.value.trim());
+        };
+        inputArea.appendChild(btnSubmit);
+      }
+    }
+
+    function customLogic(questionId, answer) {
+      retryCount[questionId] = retryCount[questionId] || 0;
+      retryCount[questionId]++;
+
+      if (questionId === "love" && answer !== "รักกกก") {
+        errorMsg.textContent = retryCount[questionId] === 1 ? "ห้ะ ขออีกรอบ 😢" : "อยากโดนทุบหรอออ 💢";
+        return false;
+      }
+
+      if (questionId === "hug" && answer !== "อยากสุดๆ") {
+        errorMsg.textContent = retryCount[questionId] === 1 ? "พี่อาบน้ำแล้ว ถูสบู่ด้วยย 🧼" : "อ๋อ ก็แล้วแต่เหอะ 🥲";
+        return false;
+      }
+
+      return true;
+    }
+
+    function checkAnswer(answer) {
+      const q = questions[currentIndex];
+      if (q.type === "button" && !customLogic(q.id, answer)) return;
+
+      if (answer.toLowerCase() === q.correct.toLowerCase()) {
+        errorMsg.textContent = "";
+        inputArea.innerHTML = "";
+
+        if (q.successGif) {
+          const img = document.createElement("img");
+          img.src = q.successGif;
+          img.className = "gif";
+          inputArea.appendChild(img);
+        }
+
+        // 💖 หัวใจลอยกลางจอ
+        showFloatingHeart(window.innerWidth / 2, window.innerHeight / 2);
+
+        setTimeout(() => {
+          currentIndex++;
+          if (currentIndex < questions.length) {
+            showQuestion();
+          } else {
+            window.location.href = "wish.html"; // ไปเป่าเค้ก
+          }
+        }, 1600);
+      } else {
+        errorMsg.textContent = "อะไร ตอบก็ผิด ไปตอบใหม่เลยไอ่อ้วม😕";
+      }
+    }
+
+    function showFloatingHeart(x, y) {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.style.left = x + 'px';
+      heart.style.top = y + 'px';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 1500);
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
